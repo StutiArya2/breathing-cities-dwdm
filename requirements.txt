@@ -1,0 +1,9 @@
+pandas>=2.0
+numpy
+sqlalchemy>=2.0
+pymysql
+scikit-learn
+mlxtend
+statsmodels
+streamlit
+plotly

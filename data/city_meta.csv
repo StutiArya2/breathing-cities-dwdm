@@ -1,0 +1,27 @@
+city,state,region,latitude,longitude,is_coastal
+Ahmedabad,Gujarat,West,23.02,72.57,0
+Aizawl,Mizoram,North-East,23.73,92.72,0
+Amaravati,Andhra Pradesh,South,16.51,80.52,0
+Amritsar,Punjab,North,31.63,74.87,0
+Bengaluru,Karnataka,South,12.97,77.59,0
+Bhopal,Madhya Pradesh,Central,23.26,77.41,0
+Brajrajnagar,Odisha,East,21.82,83.92,0
+Chandigarh,Chandigarh,North,30.73,76.78,0
+Chennai,Tamil Nadu,South,13.08,80.27,1
+Coimbatore,Tamil Nadu,South,11.02,76.96,0
+Delhi,Delhi,North,28.61,77.21,0
+Ernakulam,Kerala,South,9.98,76.30,1
+Gurugram,Haryana,North,28.46,77.03,0
+Guwahati,Assam,North-East,26.14,91.74,0
+Hyderabad,Telangana,South,17.39,78.49,0
+Jaipur,Rajasthan,North,26.91,75.79,0
+Jorapokhar,Jharkhand,East,23.70,86.41,0
+Kochi,Kerala,South,9.93,76.27,1
+Kolkata,West Bengal,East,22.57,88.36,0
+Lucknow,Uttar Pradesh,North,26.85,80.95,0
+Mumbai,Maharashtra,West,19.08,72.88,1
+Patna,Bihar,East,25.59,85.14,0
+Shillong,Meghalaya,North-East,25.58,91.89,0
+Talcher,Odisha,East,20.95,85.23,0
+Thiruvananthapuram,Kerala,South,8.52,76.94,1
+Visakhapatnam,Andhra Pradesh,South,17.69,83.22,1

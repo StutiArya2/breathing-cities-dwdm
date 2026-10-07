@@ -1,0 +1,10 @@
+# Raw data (not committed)
+data/raw/*
+!data/raw/.gitkeep
+data/sample/
+warehouse/*.db
+outputs/*
+!outputs/.gitkeep
+__pycache__/
+.venv/
+__pycache__/
