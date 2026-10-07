@@ -36,20 +36,32 @@ def load_named_queries(path):
     return {name: body.strip().rstrip(";") for name, body in zip(blocks[1::2], blocks[2::2])}
 
 
-def read_cube(engine):
-    """Denormalised view of the star used by all mining scripts."""
-    query = """
+WEATHER = ["temp_mean", "humidity", "precipitation", "wind_mean", "wind_max", "radiation",
+           "mixing_height"]
+
+
+def read_cube(engine, include_suspect=False):
+    """Denormalised drill-across view of the constellation used by all mining scripts:
+    fact_air_quality joined to its dimensions and to fact_weather on (city, date)."""
+    query = f"""
         SELECT c.city, c.region, c.is_coastal, d.full_date, d.year, d.month, d.season,
                d.is_weekend, e.event_name, a.bucket,
-               f.pm25, f.pm10, f.no, f.no2, f.nox, f.nh3, f.co, f.so2, f.o3,
-               f.benzene, f.toluene, f.xylene, f.aqi
+               wc.wind_band, wc.rain_band, wc.temp_band, wc.mixing_band, f.quality_flag,
+               {", ".join("f." + p for p in POLLUTANTS)}, f.aqi,
+               {", ".join("w." + m for m in WEATHER)}
         FROM fact_air_quality f
-        JOIN dim_city c         ON f.city_key = c.city_key
-        JOIN dim_date d         ON f.date_key = d.date_key
-        JOIN dim_event e        ON f.event_key = e.event_key
-        JOIN dim_aqi_category a ON f.category_key = a.category_key
+        JOIN dim_city c               ON f.city_key = c.city_key
+        JOIN dim_date d               ON f.date_key = d.date_key
+        JOIN dim_event e              ON f.event_key = e.event_key
+        JOIN dim_aqi_category a       ON f.category_key = a.category_key
+        JOIN dim_weather_condition wc ON f.weather_key = wc.weather_key
+        LEFT JOIN fact_weather w      ON f.city_key = w.city_key AND f.date_key = w.date_key
     """
     df = pd.read_sql(query, engine, parse_dates=["full_date"])
-    num = POLLUTANTS + ["aqi"]
+    num = POLLUTANTS + ["aqi"] + WEATHER
     df[num] = df[num].astype(float)
+    if not include_suspect:
+        # suspect rows keep their place in the time series but lose their readings
+        df.loc[df.quality_flag == 1, POLLUTANTS + ["aqi"]] = float("nan")
+        df.loc[df.quality_flag == 1, "bucket"] = "Unknown"
     return df.sort_values(["city", "full_date"]).reset_index(drop=True)

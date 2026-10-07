@@ -1,4 +1,3 @@
-# Raw data (not committed)
 data/raw/*
 !data/raw/.gitkeep
 data/sample/
@@ -8,3 +7,4 @@ outputs/*
 __pycache__/
 .venv/
 __pycache__/
+*.zip

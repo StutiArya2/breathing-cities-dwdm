@@ -1,9 +1,11 @@
 pandas>=2.0
 numpy
+requests
 sqlalchemy>=2.0
 pymysql
 scikit-learn
 mlxtend
 statsmodels
+shap
 streamlit
 plotly

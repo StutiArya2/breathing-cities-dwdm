@@ -1,64 +1,76 @@
-"""Association rules: which pollutant + context conditions co-occur with bad-air days?
+"""Association rules (FP-Growth), mined separately for each region (the 'segment').
 
-Each city-day becomes a 'basket' of items such as PM2.5=High, NO2=High,
-Season=Winter, Event=Diwali, AQI=Very Poor. FP-Growth mines frequent itemsets
-per region (the 'segment'), and we keep rules whose consequent is an AQI bucket.
+Each city-day is a 'basket' of items. Two rule sets:
+
+1. Context rules     {weather, season, event, weekday items} -> Air=Unhealthy
+                     Pollutant readings are NOT allowed on the left, because AQI is computed from
+                     them (PM2.5 high -> AQI bad is trivially true). These rules say which
+                     *conditions* bring bad air.
+2. Co-pollution rules {pollutant exceedances} -> {another pollutant exceedance}
+                     Which pollutants rise together, hinting at shared sources
+                     (e.g. NO2 + CO = traffic, SO2 = industry / coal).
 """
 import pandas as pd
 from mlxtend.frequent_patterns import association_rules, fpgrowth
 
 from db import OUTPUTS, get_engine, read_cube
 
-# Bins follow the CPCB sub-index breakpoints (24h standard = upper edge of "Satisfactory").
-BINS = {
-    "PM2.5": ("pm25", [0, 60, 120, float("inf")]),
-    "PM10": ("pm10", [0, 100, 250, float("inf")]),
-    "NO2": ("no2", [0, 80, 180, float("inf")]),
-    "SO2": ("so2", [0, 80, 380, float("inf")]),
-    "CO": ("co", [0, 2, 10, float("inf")]),
-    "O3": ("o3", [0, 100, 168, float("inf")]),
-}
-LEVELS = ["Low", "High", "Very high"]
+# A pollutant is "High" above its CPCB 24-hour standard (the top of the Satisfactory band).
+STANDARDS = {"PM2.5": ("pm25", 60), "PM10": ("pm10", 100), "NO2": ("no2", 80),
+             "SO2": ("so2", 80), "CO": ("co", 2), "O3": ("o3", 100), "NH3": ("nh3", 200)}
+CONTEXT_PREFIXES = ("Season=", "Event=", "Day=", "Wind=", "Mixing=", "Rain=", "Temp=")
 
 
-def to_baskets(cube):
-    items = pd.DataFrame(index=cube.index)
-    for label, (col, edges) in BINS.items():
-        items[label] = label + "=" + pd.cut(cube[col], edges, labels=LEVELS, right=False).astype(str)
-    items["Season"] = "Season=" + cube.season
-    items["Event"] = "Event=" + cube.event_name
-    items["Day"] = "Day=" + cube.is_weekend.map({0: "Weekday", 1: "Weekend"})
-    items["AQI"] = "AQI=" + cube.bucket
+def context_baskets(cube):
+    items = pd.DataFrame({
+        "Season": "Season=" + cube.season, "Event": "Event=" + cube.event_name,
+        "Day": "Day=" + cube.is_weekend.map({0: "Weekday", 1: "Weekend"}),
+        "Wind": "Wind=" + cube.wind_band, "Mixing": "Mixing=" + cube.mixing_band,
+        "Rain": "Rain=" + cube.rain_band, "Temp": "Temp=" + cube.temp_band,
+    })
     onehot = pd.get_dummies(items, prefix="", prefix_sep="").astype(bool)
-    return onehot.loc[:, ~onehot.columns.str.endswith("=nan") & (onehot.columns != "AQI=Unknown")]
+    onehot["Air=Unhealthy"] = cube.aqi > 200
+    return onehot[cube.aqi.notna()]
 
 
-def mine(baskets, min_support=0.03, min_confidence=0.6):
+def pollutant_baskets(cube):
+    onehot = pd.DataFrame({f"{name}=High": cube[col] > limit for name, (col, limit) in STANDARDS.items()})
+    return onehot[onehot.any(axis=1)]  # days where at least one standard is exceeded
+
+
+def mine(baskets, min_support, min_confidence, consequent_filter=None):
     itemsets = fpgrowth(baskets, min_support=min_support, use_colnames=True, max_len=4)
     if itemsets.empty:
         return pd.DataFrame()
     rules = association_rules(itemsets, metric="confidence", min_threshold=min_confidence)
-    is_aqi = rules.consequents.apply(lambda c: len(c) == 1 and next(iter(c)).startswith("AQI="))
-    no_aqi_lhs = rules.antecedents.apply(lambda a: not any(i.startswith("AQI=") for i in a))
-    rules = rules[is_aqi & no_aqi_lhs & (rules.lift > 1.2)].copy()
-    rules["antecedents"] = rules.antecedents.apply(lambda s: " & ".join(sorted(s)))
-    rules["consequents"] = rules.consequents.apply(lambda s: next(iter(s)))
+    rules = rules[(rules.lift > 1.2) & (rules.consequents.apply(len) == 1)]
+    if consequent_filter:
+        rules = rules[rules.consequents.apply(lambda c: next(iter(c)) == consequent_filter)]
+    rules = rules.assign(antecedents=rules.antecedents.apply(lambda s: " & ".join(sorted(s))),
+                         consequents=rules.consequents.apply(lambda s: next(iter(s))))
     return rules[["antecedents", "consequents", "support", "confidence", "lift"]] \
-        .sort_values("lift", ascending=False)
+        .sort_values(["lift", "support"], ascending=False)
 
 
 def main():
     cube = read_cube(get_engine())
-    all_rules = []
+    context, copoll = [], []
     for region, part in cube.groupby("region"):
-        rules = mine(to_baskets(part))
+        base = (part.aqi > 200).mean()
+        rules = mine(context_baskets(part), 0.02, 0.5, "Air=Unhealthy")
         if not rules.empty:
-            all_rules.append(rules.assign(region=region))
-            print(f"\n=== {region}: {len(rules)} rules ===")
-            print(rules.head(5).round(3).to_string(index=False))
+            context.append(rules.assign(region=region, base_rate=round(base, 3)))
+            print(f"\n=== {region}: context rules (base unhealthy rate {base:.1%}) ===")
+            print(rules.head(4).round(3).to_string(index=False))
+        rules = mine(pollutant_baskets(part), 0.05, 0.6)
+        if not rules.empty:
+            copoll.append(rules.assign(region=region))
     OUTPUTS.mkdir(exist_ok=True)
-    if all_rules:
-        pd.concat(all_rules).round(4).to_csv(OUTPUTS / "association_rules.csv", index=False)
+    pd.concat(context).round(4).to_csv(OUTPUTS / "rules_context.csv", index=False)
+    cp = pd.concat(copoll).round(4)
+    cp.to_csv(OUTPUTS / "rules_copollution.csv", index=False)
+    print("\n=== Co-pollution rules (top by lift) ===")
+    print(cp.sort_values("lift", ascending=False).head(10).to_string(index=False))
 
 
 if __name__ == "__main__":
