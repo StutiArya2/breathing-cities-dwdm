@@ -1,0 +1,39 @@
+station_name,avg_pm25,avg_aqi
+"Bawana, Delhi - DPCC",251.6,396.0
+"Wazirpur, Delhi - DPCC",247.8,409.0
+"Mundka, Delhi - DPCC",243.7,403.0
+"Nehru Nagar, Delhi - DPCC",241.1,397.0
+"Rohini, Delhi - DPCC",238.0,392.0
+"Anand Vihar, Delhi - DPCC",237.5,408.0
+"Ashok Vihar, Delhi - DPCC",235.2,389.0
+"Vivek Vihar, Delhi - DPCC",230.6,370.0
+"DTU, Delhi - CPCB",229.2,381.0
+"Dwarka-Sector 8, Delhi - DPCC",225.4,411.0
+"Jahangirpuri, Delhi - DPCC",212.2,392.0
+"Punjabi Bagh, Delhi - DPCC",212.0,372.0
+"Sirifort, Delhi - CPCB",209.6,376.0
+"Pusa, Delhi - DPCC",209.3,357.0
+"Jawaharlal Nehru Stadium, Delhi - DPCC",209.0,368.0
+"Dr. Karni Singh Shooting Range, Delhi - DPCC",208.7,351.0
+"Okhla Phase-2, Delhi - DPCC",208.1,362.0
+"ITO, Delhi - CPCB",208.1,348.0
+"Narela, Delhi - DPCC",204.7,378.0
+"Alipur, Delhi - DPCC",203.9,349.0
+"CRRI Mathura Road, Delhi - IMD",199.5,361.0
+"Sri Aurobindo Marg, Delhi - DPCC",195.3,327.0
+"IGI Airport (T3), Delhi - IMD",194.9,354.0
+"Mandir Marg, Delhi - DPCC",192.6,332.0
+"North Campus, DU, Delhi - IMD",192.0,337.0
+"Burari Crossing, Delhi - IMD",190.6,330.0
+"Najafgarh, Delhi - DPCC",190.3,329.0
+"Patparganj, Delhi - DPCC",188.7,331.0
+"Sonia Vihar, Delhi - DPCC",186.5,353.0
+"NSIT Dwarka, Delhi - CPCB",182.5,331.0
+"Major Dhyan Chand National Stadium, Delhi - DPCC",181.9,335.0
+"Lodhi Road, Delhi - IMD",176.7,310.0
+"R K Puram, Delhi - DPCC",176.6,327.0
+"Pusa, Delhi - IMD",173.1,319.0
+"Aya Nagar, Delhi - IMD",172.9,318.0
+"IHBAS, Dilshad Garden, Delhi - CPCB",164.9,288.0
+"Shadipur, Delhi - CPCB",148.4,285.0
+"East Arjun Nagar, Delhi - CPCB",,

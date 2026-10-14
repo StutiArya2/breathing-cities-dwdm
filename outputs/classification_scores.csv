@@ -1,0 +1,5 @@
+model,precision,recall,f1,roc_auc,flip_day_accuracy
+persistence,0.78,0.786,0.783,0.969,0.0
+tree_pollution,0.727,0.908,0.807,0.975,0.278
+rf_pollution,0.787,0.888,0.834,0.981,0.353
+rf_weather,0.774,0.905,0.834,0.981,0.35

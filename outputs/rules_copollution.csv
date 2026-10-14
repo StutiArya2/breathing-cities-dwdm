@@ -1,0 +1,8 @@
+antecedents,consequents,support,confidence,lift,region
+NO2=High,PM2.5=High,0.0628,0.8583,1.2795,East
+CO=High & PM10=High,PM2.5=High,0.0827,0.9602,1.2246,North
+NO2=High,PM2.5=High,0.0501,0.9419,1.2013,North
+CO=High & SO2=High,PM2.5=High,0.0546,0.6964,1.5836,West
+SO2=High,PM2.5=High,0.0574,0.6833,1.5538,West
+PM2.5=High & SO2=High,CO=High,0.0546,0.9512,1.4004,West
+SO2=High,CO=High,0.0784,0.9333,1.374,West

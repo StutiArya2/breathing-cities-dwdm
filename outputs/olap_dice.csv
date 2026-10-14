@@ -1,0 +1,12 @@
+city,year,avg_pm25,avg_no2
+Amritsar,2019,51.2,22.9
+Amritsar,2020,27.3,13.8
+Chandigarh,2020,18.4,11.6
+Delhi,2019,85.4,48.7
+Delhi,2020,52.7,26.6
+Gurugram,2019,84.4,15.9
+Gurugram,2020,49.5,19.7
+Jaipur,2019,49.8,32.8
+Jaipur,2020,34.8,20.1
+Lucknow,2019,95.0,36.1
+Lucknow,2020,59.0,18.2

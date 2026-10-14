@@ -2,8 +2,10 @@ data/raw/*
 !data/raw/.gitkeep
 data/sample/
 warehouse/*.db
-outputs/*
-!outputs/.gitkeep
+# outputs: keep result tables, skip trained models and logs
+outputs/*.joblib
+outputs/*log*.txt
+outputs/olap_console.txt
 __pycache__/
 .venv/
 __pycache__/

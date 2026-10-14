@@ -1,0 +1,15 @@
+city,long_history,seasonal_naive,weather_adjusted,holt_winters,sarima
+Amaravati,False,30.2,29.7,,
+Amritsar,False,26.6,23.5,,
+Bengaluru,True,16.4,12.1,28.4,16.6
+Brajrajnagar,False,20.4,20.2,,
+Chennai,True,14.3,14.9,14.4,35.9
+Delhi,True,12.7,9.2,23.5,23.0
+Gurugram,True,29.8,23.8,38.6,28.0
+Hyderabad,True,14.0,12.6,17.9,26.5
+Jaipur,False,27.3,20.5,,
+Jorapokhar,False,39.8,26.1,,
+Lucknow,True,18.9,14.2,19.5,17.7
+Patna,True,11.5,12.9,25.2,22.0
+Thiruvananthapuram,False,15.7,13.3,,
+Visakhapatnam,False,20.6,15.9,,

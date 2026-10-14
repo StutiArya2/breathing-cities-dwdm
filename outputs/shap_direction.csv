@@ -1,0 +1,30 @@
+,corr_value_vs_shap
+pm25,0.758
+pm10,0.855
+no2,0.095
+nox,0.781
+nh3,0.714
+co,0.85
+so2,0.625
+o3,0.511
+aqi,0.869
+aqi_3day_mean,0.885
+aqi_change,0.458
+month,-0.209
+is_weekend,-0.726
+is_coastal,-0.918
+region_North,0.945
+region_East,0.897
+event_Stubble burning,0.719
+event_Diwali,0.785
+event_COVID lockdown,0.0
+temp_mean,-0.811
+humidity,-0.857
+precipitation,-0.378
+wind_mean,-0.797
+mixing_height,-0.564
+next_temp_mean,-0.678
+next_humidity,-0.905
+next_precipitation,-0.439
+next_wind_mean,-0.785
+next_mixing_height,-0.644
