@@ -89,8 +89,20 @@ through the conformed dimensions.
 
 ## Run it
 
+Create a virtual environment once (Windows):
+
 ```bash
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+If PowerShell blocks `activate`, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or use
+Command Prompt. In VS Code, pick the interpreter with *Python: Select Interpreter* → `.venv`.
+
+Then, with the venv active:
+
+```bash
 python src/run_all.py            # weather fetch (first time), ETL, OLAP, all mining -> outputs/
 streamlit run dashboard/app.py   # 10-tab dashboard
 ```
