@@ -116,8 +116,16 @@ with tabs[4]:
 with tabs[5]:
     cl = output("city_clusters.csv")
     if cl is not None:
-        st.plotly_chart(px.scatter(cl, x="pc1", y="pc2", color="cluster_name", text="city",
-                                   title="Cities in PCA space, coloured by K-Means cluster"), **WIDE)
+        fig = px.scatter(cl, x="pc1", y="pc2", color="cluster_name", text="city", height=600,
+                         color_discrete_map={"Smog belt": "#e8453c", "Moderate urban": "#4a90d9",
+                                             "Low-traffic, SO2-heavy": "#f5a623"},
+                         labels={"pc1": "Principal component 1", "pc2": "Principal component 2",
+                                 "cluster_name": "Cluster"},
+                         title="Cities in PCA space, coloured by K-Means cluster")
+        fig.update_traces(marker=dict(size=16, line=dict(width=1.5, color="white")),
+                          textposition="top center", textfont=dict(size=12))
+        fig.update_layout(legend=dict(font=dict(size=14), itemsizing="constant"))
+        st.plotly_chart(fig, **WIDE)
         st.dataframe(output("cluster_summary.csv"), **WIDE)
 
 with tabs[6]:
